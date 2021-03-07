@@ -28,7 +28,9 @@ function checkRequest(req, res, next) {
 
   if(isWaiting) {
     res.send('Need to wait 500 mc');
+    // here you can process and save statistic for failed request
   } else {
+    // here you can process and save statistic for good request
     res.cookie('isWaiting', true, { maxAge: 2000, httpOnly: true });
     next();
   }
