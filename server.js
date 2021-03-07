@@ -31,7 +31,7 @@ function checkRequest(req, res, next) {
     // here you can process and save statistic for failed request
   } else {
     // here you can process and save statistic for good request
-    res.cookie('isWaiting', true, { maxAge: 2000, httpOnly: true });
+    res.cookie('isWaiting', true, { maxAge: 500, httpOnly: true });
     next();
   }
 }
