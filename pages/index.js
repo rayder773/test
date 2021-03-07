@@ -17,7 +17,7 @@ export default function Home() {
   }
 
   const fetchData = async () => {
-    const {data} = await axios.get('http://localhost:4000/getUserData', {withCredentials: true});
+    const {data} = await axios.get('http://localhost:4000/getUserData');
 
     setData(data);
     setDisabled(true);

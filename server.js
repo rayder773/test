@@ -1,43 +1,36 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const cookieParser = require("cookie-parser");
-const axios = require('axios');
+const rateLimit = require("express-rate-limit");
 
 const port = 4000;
 
 const corsOptions = {
   origin: 'http://localhost:3000',
-  credentials: true,
 };
 
-app.use(cors(corsOptions));
-app.use(cookieParser());
-app.use(checkRequest);
+const limiter = rateLimit({
+  windowMs: 500,
+  max: 2,
+  onLimitReached: limitReached,
+});
 
+app.use(limiter);
+app.use(cors(corsOptions));
 app.options('*', cors());
 
-app.get('/getUserData', getUserData);
+app.get('/getUserData', limiter, getUserData);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 })
 
-function checkRequest(req, res, next) {
-  const { isWaiting } = req.cookies;
-
-  if(isWaiting) {
-    res.send('Need to wait 500 mc');
-    // here you can process and save statistic for failed request
-  } else {
-    // here you can process and save statistic for good request
-    res.cookie('isWaiting', true, { maxAge: 500, httpOnly: true });
-    next();
-  }
+function limitReached (req, res) {
+  console.warn({ ip: req.ip }, 'Rate limiter triggered')
 }
 
 async function getUserData(req, res) {
-  const {data} = await axios.get('https://api.github.com/users/rayder773');
-
-  res.json(data);
+  return res.json({
+    user: 'Denys'
+  })
 }
