@@ -17,14 +17,20 @@ export default function Home() {
   }
 
   const fetchData = async () => {
-    const {data} = await axios.get('http://localhost:4000/getUserData');
+    if(disabled) {
+      setData('Need wait 500ms');
+      axios.get('http://localhost:3000/api/badRequestStatistic');
+    } else {
+      const { data } = await axios.get('http://localhost:3000/api/userData');
+      setData(data);
+      setDisabled(true);
 
-    setData(data);
-    setDisabled(true);
+      axios.get('http://localhost:3000/api/goodRequestStatistic');
 
-    setTimeout(() => {
-      setDisabled(false);
-    }, timeout)
+      setTimeout(() => {
+        setDisabled(false);
+      }, timeout)
+    }
   }
 
   return (
@@ -32,7 +38,6 @@ export default function Home() {
       <button
         onClick={fetchData}
         className={styles.button}
-        disabled={disabled}
       >
         Fetch data
       </button>
